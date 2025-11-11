@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Iron
   m_EditorClassIdentifier: 
   type: 0
-  title: 
-  icon: {fileID: 0}
+  title: Iron
+  icon: {fileID: -193374272, guid: ccaace33325e5064eace96ffcc30ca74, type: 3}
   maxStack: 0
+  isStackable: 0

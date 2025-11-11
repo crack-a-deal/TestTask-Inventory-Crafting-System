@@ -9,6 +9,9 @@ public class ItemData : ScriptableObject
     [SerializeField] private int maxStack = 99;
     [SerializeField] private bool isStackable;
 
+    public string Title => title;
+    public Sprite Icon => icon;
+
     private void OnValidate()
     {
         if (!string.IsNullOrEmpty(title))
