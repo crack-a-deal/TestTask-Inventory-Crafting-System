@@ -1,22 +1,32 @@
 using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 
 [System.Serializable]
-public class ItemSlot
+public class InventoryItem
 {
-    public event Action<int> CountChanged;
+    public event Action<InventoryItem> Changed;
 
-    public ItemData Item;
+    [SerializeField] private ItemData _item;
+    public ItemData Item
+    {
+        get => _item;
+        set
+        {
+            if (_item == value)
+            {
+                return;
+            }
+            _item = value;
+            Changed?.Invoke(this);
+        }
+    }
 
     [SerializeField] private int _count;
+
     public int Count
     {
-        get
-        {
-            return _count;
-        }
+        get => _count;
         set
         {
             if (_count == value)
@@ -24,7 +34,7 @@ public class ItemSlot
                 return;
             }
             _count = value;
-            CountChanged?.Invoke(_count);
+            Changed?.Invoke(this);
         }
     }
 }
@@ -32,42 +42,28 @@ public class ItemSlot
 [System.Serializable]
 public class Inventory
 {
-    [SerializeField] private ItemSlot[] _slots;
+    [SerializeField] private InventoryItem[] _slots;
 
-    public ItemSlot[] ItemSlots => _slots;
+    public InventoryItem[] Items => _slots;
+
+    public int Size => _slots.Length;
 
     public Inventory(int size)
     {
-        _slots = new ItemSlot[size];
+        _slots = new InventoryItem[size];
         for (int i = 0; i < size; i++)
         {
-            _slots[i] = new ItemSlot();
+            _slots[i] = new InventoryItem();
         }
     }
 
-    public void Fill(ItemData[] itemData)
+    public InventoryItem GetItem(int index)
     {
-        if (itemData == null || itemData.Length == 0)
-        {
-            return;
-        }
-        for (int i = 0; i < _slots.Length; i++)
-        {
-            ItemData randomItem = itemData[Random.Range(0, itemData.Length)];
-
-            int count = Random.Range(0, 99);
-
-            _slots[i].Item = randomItem;
-            _slots[i].Count = count;
-        }
+        return _slots[index];
     }
 
-    public void Clear()
+    public void SetItem(int index, InventoryItem item)
     {
-        foreach (ItemSlot slot in _slots)
-        {
-            slot.Item = null;
-            slot.Count = 0;
-        }
+        _slots[index] = item;
     }
 }
