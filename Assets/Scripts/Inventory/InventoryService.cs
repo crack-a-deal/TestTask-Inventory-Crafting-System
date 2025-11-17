@@ -4,15 +4,15 @@ using Random = UnityEngine.Random;
 
 public class InventoryService
 {
-    private Inventory _inventory;
+    private InventoryCollection _inventory;
     private readonly ItemDatabase _itemDatabase;
 
-    public Inventory Inventory => _inventory;
+    public InventoryCollection Inventory => _inventory;
 
     public InventoryService(ItemDatabase itemDatabase)
     {
         _itemDatabase = itemDatabase;
-        _inventory = new Inventory(24);
+        _inventory = new InventoryCollection(24);
     }
 
     public void Fill(ItemData[] itemData)
@@ -26,7 +26,7 @@ public class InventoryService
         {
             ItemData randomItem = itemData[Random.Range(0, itemData.Length)];
 
-            int count = Random.Range(1, 99);
+            int count = Random.Range(1, randomItem.MaxStack);
 
             var slot = _inventory.GetItem(i);
 
@@ -44,15 +44,13 @@ public class InventoryService
         }
     }
 
-    public void MoveItem(int fromIndex, int toIndex)
+    public void MoveItem(ItemStack fromItem, ItemStack toItem)
     {
-        if (fromIndex == toIndex)
+        if (fromItem == toItem)
         {
             return;
         }
 
-        InventoryItem fromItem = _inventory.GetItem(fromIndex);
-        InventoryItem toItem = _inventory.GetItem(toIndex);
 
         if (toItem.Item == null)
         {
@@ -61,10 +59,12 @@ public class InventoryService
 
             fromItem.Item = null;
             fromItem.Count = 0;
+
+            Debug.Log($"Move {fromItem.Item?.Title} ({fromItem.Count}) || {toItem.Item?.Title} ({toItem.Count})");
             return;
         }
 
-        if(fromItem.Item == toItem.Item && fromItem.Item.IsStackable)
+        if (fromItem.Item == toItem.Item && fromItem.Item.IsStackable)
         {
             toItem.Count += fromItem.Count;
 
@@ -76,9 +76,9 @@ public class InventoryService
         SwapItems(fromItem, toItem);
     }
 
-    private void SwapItems(InventoryItem fromItem,InventoryItem toItem)
+    private void SwapItems(ItemStack fromItem, ItemStack toItem)
     {
-        InventoryItem it = new InventoryItem();
+        ItemStack it = new ItemStack();
         it.Item = fromItem.Item;
         it.Count = fromItem.Count;
 
@@ -89,7 +89,14 @@ public class InventoryService
         toItem.Count = it.Count;
     }
 
-    public int GetItemIndex(InventoryItem item)
+    public void RemoveItem(int index)
+    {
+        ItemStack inventoryItem = _inventory.GetItem(index);
+        inventoryItem.Item = null;
+        inventoryItem.Count = 0;
+    }
+
+    public int GetItemIndex(ItemStack item)
     {
         return Array.IndexOf(_inventory.Items, item);
     }
