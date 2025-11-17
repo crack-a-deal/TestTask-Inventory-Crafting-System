@@ -100,7 +100,6 @@ public class SlotFramePresenter
 
     private void InventoryItem_OnChanged(ItemStack stack)
     {
-        Debug.Log($"stack changed: {_view.name} - {stack.Item?.Title} ({stack.Count})");
         UpdateSlotView(stack);
     }
 

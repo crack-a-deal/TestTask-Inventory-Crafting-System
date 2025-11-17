@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3c7d675f8ec96ff4dbd31451d7b43682, type: 3}
-  m_Name: Iron
+  m_Name: Stone
   m_EditorClassIdentifier: 
   type: 0
-  title: Iron
-  icon: {fileID: -193374272, guid: ccaace33325e5064eace96ffcc30ca74, type: 3}
-  maxStack: 0
-  isStackable: 0
+  title: Stone
+  description: This is stone
+  icon: {fileID: 2070042568, guid: ccaace33325e5064eace96ffcc30ca74, type: 3}
+  maxStack: 99
+  isStackable: 1

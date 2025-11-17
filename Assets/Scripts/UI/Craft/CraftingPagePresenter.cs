@@ -12,6 +12,7 @@ public class CraftingPagePresenter
     private Dictionary<SlotFrameView, ItemStack> _slots;
     private Dictionary<SlotFrameView, SlotFramePresenter> _slotsPresenter;
 
+    private SlotFramePresenter _craftingSlotPresenter;
 
     public CraftingPagePresenter(InventoryService inventoryService, CraftingService craftingService, CraftingPageView view, DragAndDropController dragPresenter, TooltipPresenter tooltipPresenter)
     {
@@ -20,12 +21,12 @@ public class CraftingPagePresenter
         _view = view;
         _dragDropPresenter = dragPresenter;
         this.tooltipPresenter = tooltipPresenter;
-        InitInventorySlots();
+        InitCraftingSlots();
 
         _view.CraftButtonClicked += View_OnCraftButtonClicked;
     }
 
-    private void InitInventorySlots()
+    private void InitCraftingSlots()
     {
         _slots = new Dictionary<SlotFrameView, ItemStack>();
         _slotsPresenter = new Dictionary<SlotFrameView, SlotFramePresenter>();
@@ -40,10 +41,17 @@ public class CraftingPagePresenter
             _slots.Add(slotFrame, itemSlot);
             _slotsPresenter.Add(slotFrame, presenter);
         }
+
+        _craftingSlotPresenter = new SlotFramePresenter(new UISlot(0,craftingService.Item),_view.CraftingSlot, tooltipPresenter, _dragDropPresenter);
     }
 
     private void View_OnCraftButtonClicked()
     {
+        ItemStack itemStack = craftingService.TryCraft();
 
+        if (itemStack != null)
+        {
+            _craftingSlotPresenter.SetItem(itemStack);
+        }
     }
 }

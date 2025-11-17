@@ -5,7 +5,6 @@ public class ItemDatabase : ScriptableObject
 {
     [SerializeField] private ItemData[] items;
 
-
     public ItemData[] GetAllItems()
     {
         return items;

@@ -12,6 +12,7 @@ public class CraftingPageView : MonoBehaviour
     [SerializeField] private Button craftButton;
 
     public SlotFrameView[] Slots => slots;
+    public SlotFrameView CraftingSlot => craftingSlot;
 
 
     private void Awake()

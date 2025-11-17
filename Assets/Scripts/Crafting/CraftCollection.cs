@@ -5,3 +5,10 @@ public class CraftCollection : BaseItemStackCollection, IItemContainer
     {
     }
 }
+[System.Serializable]
+public class CraftItem : BaseItemStackCollection, IItemContainer
+{
+    public CraftItem(int size) : base(size)
+    {
+    }
+}
