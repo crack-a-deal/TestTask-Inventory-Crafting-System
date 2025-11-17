@@ -50,8 +50,6 @@ public class DragAndDropController
         var fromStack = from.Container.GetItem(from.Index);
         var toStack = to.Container.GetItem(to.Index);
 
-        Debug.Log($"Move {fromStack.Item?.Title} ({fromStack.Count}) || {toStack.Item?.Title} ({toStack.Count})");
-
         if (toStack.Item == null)
         {
             toStack.Item = fromStack.Item;
