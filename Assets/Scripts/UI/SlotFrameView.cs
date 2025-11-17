@@ -4,37 +4,34 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SlotFrameView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler
+public class SlotFrameView : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, IPointerExitHandler, IDropHandler
 {
-    public event Action<SlotFrameView,DragData> ItemBeginDrag;
-    public event Action<DragData> ItemDrag;
-    public event Action<DragData> ItemEndDrag;
     public event Action<SlotFrameView> ItemDropped;
 
-    [SerializeField] private Image itemIcon;
+    public event Action ItemEnter;
+    public event Action<Vector2> ItemMove;
+    public event Action ItemExit;
+
+    [SerializeField] private DragItemView dragItemView;
     [SerializeField] private TMP_Text itemCount;
 
     [SerializeField] private Image targetGraphic;
     [SerializeField] private Sprite defaultSprite;
     [SerializeField] private Sprite selectedSprite;
 
-    [SerializeField] private DragItemView dragItemView;
 
-    private void Awake()
-    {
-        dragItemView.BeginDrag += x => ItemBeginDrag?.Invoke(this, x);
-        dragItemView.Drag += x => ItemDrag?.Invoke(x);
-        dragItemView.EndDrag += x => ItemEndDrag?.Invoke(x);
-    }
+    public DragItemView DragedItem => dragItemView; 
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         targetGraphic.sprite = selectedSprite;
+        ItemEnter?.Invoke();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         targetGraphic.sprite = defaultSprite;
+        ItemExit?.Invoke();
     }
     public void OnDrop(PointerEventData eventData)
     {
@@ -43,7 +40,7 @@ public class SlotFrameView : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void SetIcon(Sprite icon)
     {
-        itemIcon.sprite = icon;
+        dragItemView.Icon.sprite = icon;
     }
 
     public void SetCount(string count)
@@ -53,8 +50,12 @@ public class SlotFrameView : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void ShowItem(bool isShow)
     {
-        dragItemView.enabled = isShow;
-        itemIcon.enabled = isShow;
+        dragItemView.Icon.enabled = isShow;
         itemCount.enabled = isShow;
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        ItemMove?.Invoke(eventData.position);
     }
 }

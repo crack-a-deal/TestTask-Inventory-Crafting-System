@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcce603d95507b242bb4869d2c422324, type: 3}
+  m_Name: AxeRecipe
+  m_EditorClassIdentifier: 
+  ingredients:
+  - _item: {fileID: 11400000, guid: 675098362f8615843a068b893f37f3cb, type: 2}
+    _count: 2
+  - _item: {fileID: 11400000, guid: 675098362f8615843a068b893f37f3cb, type: 2}
+    _count: 2
+  - _item: {fileID: 11400000, guid: 675098362f8615843a068b893f37f3cb, type: 2}
+    _count: 2
+  - _item: {fileID: 11400000, guid: e7681d1c6980c9c44bf98520d28a7973, type: 2}
+    _count: 1
+  - _item: {fileID: 11400000, guid: e7681d1c6980c9c44bf98520d28a7973, type: 2}
+    _count: 1
+  resultItem: {fileID: 11400000, guid: d6ad7022b5e4e8d42b4388ac49e22c4a, type: 2}
+  resultCount: 1
