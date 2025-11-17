@@ -7,7 +7,6 @@ public class InventoryPagePresenter
     private readonly InventoryService _inventoryService;
     private readonly InventoryPageView _view;
     private readonly DragAndDropController _dragDropPresenter;
-    private readonly ItemDatabase _items;
     private readonly TooltipPresenter _tooltipPresenter;
 
 
@@ -16,12 +15,11 @@ public class InventoryPagePresenter
 
     private ItemStack _emptyItem = new ItemStack(null, 0);
 
-    public InventoryPagePresenter(InventoryService inventoryService, InventoryPageView view, DragAndDropController dragPresenter, ItemDatabase items, TooltipPresenter tooltipPresenter)
+    public InventoryPagePresenter(InventoryService inventoryService, InventoryPageView view, DragAndDropController dragPresenter, TooltipPresenter tooltipPresenter)
     {
         _inventoryService = inventoryService;
         _view = view;
         _dragDropPresenter = dragPresenter;
-        _items = items;
         _tooltipPresenter = tooltipPresenter;
 
         InitInventorySlots();
@@ -53,7 +51,7 @@ public class InventoryPagePresenter
 
     private void View_OnFillButtonClicked()
     {
-        _inventoryService.Fill(_items.GetAllItems());
+        _inventoryService.FillRandom();
     }
 
     private void View_OnClearButtonClicked()

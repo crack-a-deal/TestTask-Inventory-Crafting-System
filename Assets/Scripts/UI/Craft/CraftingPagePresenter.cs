@@ -42,7 +42,7 @@ public class CraftingPagePresenter
         }
 
         _craftingSlotPresenter = new SlotFramePresenter(new UISlot(0, _craftingService.Item), _view.CraftingSlot, _tooltipPresenter, _dragDropPresenter);
-        _craftingSlotPresenter.SetStatus(false);
+        //_craftingSlotPresenter.SetStatus(false);
     }
 
     private void ItemSlot_Changed(ItemStack obj)
@@ -59,7 +59,7 @@ public class CraftingPagePresenter
 
     private void View_OnCraftButtonClicked()
     {
-        _craftingSlotPresenter.SetStatus(true);
+        //_craftingSlotPresenter.SetStatus(true);
     }
 
     private void ShotPreview(ItemStack item)
