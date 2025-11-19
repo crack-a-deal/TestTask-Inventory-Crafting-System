@@ -15,6 +15,6 @@ MonoBehaviour:
   type: 1
   title: Axe
   description: This is axe
-  icon: {fileID: -932231015, guid: ccaace33325e5064eace96ffcc30ca74, type: 3}
+  icon: {fileID: 21300000, guid: 9ba47bff0df364f44a22599b07d7aca9, type: 3}
   maxStack: 1
   isStackable: 0

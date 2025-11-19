@@ -15,6 +15,6 @@ MonoBehaviour:
   type: 1
   title: Hammer
   description: This is hammer
-  icon: {fileID: -2077019847, guid: ccaace33325e5064eace96ffcc30ca74, type: 3}
+  icon: {fileID: 21300000, guid: 25696cbf794d6fe4a806204c940e1684, type: 3}
   maxStack: 1
   isStackable: 0

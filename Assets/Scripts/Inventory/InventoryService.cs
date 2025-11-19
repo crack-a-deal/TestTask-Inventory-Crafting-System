@@ -2,7 +2,7 @@ using Random = UnityEngine.Random;
 
 public class InventoryService
 {
-    private InventoryCollection _inventory;
+    private readonly InventoryCollection _inventory;
     private readonly ItemDatabase _itemDatabase;
 
     public InventoryCollection Inventory => _inventory;
@@ -27,6 +27,12 @@ public class InventoryService
             slot.Item = randomItem;
             slot.Count = count;
         }
+    }
+
+    public void RemoveItem(int index)
+    {
+        _inventory.Items[index].Item = null;
+        _inventory.Items[index].Count = 0;
     }
 
     public void Clear()

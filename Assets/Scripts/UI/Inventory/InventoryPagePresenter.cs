@@ -1,26 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
-public class InventoryPagePresenter
+public partial class InventoryPagePresenter
 {
     private readonly InventoryService _inventoryService;
     private readonly InventoryPageView _view;
-    private readonly DragAndDropController _dragDropPresenter;
-    private readonly TooltipPresenter _tooltipPresenter;
+    private readonly DragAndDropController _dragDropController;
+    private readonly SlotFramePresenterFactory _factory;
 
-
-    private Dictionary<SlotFrameView, ItemStack> _slots;
     private Dictionary<SlotFrameView, SlotFramePresenter> _slotsPresenter;
 
-    private ItemStack _emptyItem = new ItemStack(null, 0);
+    private readonly ItemStack _emptyItem = new ItemStack(null, 0);
 
-    public InventoryPagePresenter(InventoryService inventoryService, InventoryPageView view, DragAndDropController dragPresenter, TooltipPresenter tooltipPresenter)
+    public InventoryPagePresenter(InventoryService inventoryService, InventoryPageView view,DragAndDropController dragDropController,  SlotFramePresenterFactory factory)
     {
         _inventoryService = inventoryService;
         _view = view;
-        _dragDropPresenter = dragPresenter;
-        _tooltipPresenter = tooltipPresenter;
+        _dragDropController = dragDropController;
+        _factory = factory;
 
         InitInventorySlots();
 
@@ -30,11 +29,21 @@ public class InventoryPagePresenter
         _view.AllTypeButtonClicked += View_OnAllTypeButtonClicked;
         _view.ResourceButtonClicked += View_OnResourceButtonClicked;
         _view.ToolButtonClicked += View_OnToolButtonClicked;
+
+        _dragDropController.ItemDropped += DragDropController_OnItemDropped;
+    }
+
+    private void DragDropController_OnItemDropped(UISlot slot, Vector2 position)
+    {
+        bool isAllowArea = RectTransformUtility.RectangleContainsScreenPoint(_view.RectTransform, position);
+        if (!isAllowArea)
+        {
+            _inventoryService.RemoveItem(slot.Index);
+        }
     }
 
     private void InitInventorySlots()
     {
-        _slots = new Dictionary<SlotFrameView, ItemStack>();
         _slotsPresenter = new Dictionary<SlotFrameView, SlotFramePresenter>();
 
         for (int i = 0; i < _view.Slots.Length; i++)
@@ -42,9 +51,8 @@ public class InventoryPagePresenter
             SlotFrameView slotFrame = _view.Slots[i];
             ItemStack itemSlot = _inventoryService.Inventory.Items[i];
             UISlot newSlot = new UISlot(i, _inventoryService.Inventory);
-            SlotFramePresenter presenter = new SlotFramePresenter(newSlot, slotFrame, _tooltipPresenter, _dragDropPresenter);
+            SlotFramePresenter presenter = _factory.Create(newSlot, _view.Slots[i]);
 
-            _slots.Add(slotFrame, itemSlot);
             _slotsPresenter.Add(slotFrame, presenter);
         }
     }

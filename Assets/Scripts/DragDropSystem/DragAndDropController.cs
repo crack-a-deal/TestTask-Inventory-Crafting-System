@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class DragAndDropController
 {
-    private readonly DragPreview _preview;
+    public event Action<UISlot,Vector2> ItemDropped;
 
+    private readonly DragPreview _preview;
 
     private ItemStack _draggedItem;
     private IItemContainer _sourceSlot;
@@ -12,19 +13,34 @@ public class DragAndDropController
 
     private UISlot _fromSlot;
 
-
     public DragAndDropController(DragPreview preview)
     {
         _preview = preview;
+        _preview.Hide();
     }
 
-    public void BeginDrag(UISlot slot)
+    public void BeginDrag(UISlot slot, bool isShift = false)
     {
         _draggedItem = slot.Container.GetItem(slot.Index);
         _sourceSlot = slot.Container;
         _fromSlot = slot;
 
-        _preview.Show(_draggedItem.Item.Icon);
+
+        if (isShift)
+        {
+            int draggedCount = _draggedItem.Count / 2;
+
+            if (draggedCount <= 0)
+            {
+                return;
+            }
+
+
+            slot.Container.GetItem(slot.Index).Count -= draggedCount;
+            _draggedItem = new ItemStack(_draggedItem.Item, draggedCount);
+        }
+
+        _preview.Show(_draggedItem.Item.Icon, _draggedItem.Count.ToString());
     }
 
     public void Drag(Vector2 position)
@@ -32,12 +48,13 @@ public class DragAndDropController
         _preview.SetPosition(position);
     }
 
-    public void EndDrag(UISlot slot)
+    public void EndDrag(UISlot slot, Vector2 position)
     {
         _preview.Hide();
 
         if (slot == null)
         {
+            ItemDropped?.Invoke(_fromSlot, position);
             return;
         }
 
@@ -47,9 +64,10 @@ public class DragAndDropController
 
     private void MoveItem(UISlot from, UISlot to)
     {
-        var fromStack = from.Container.GetItem(from.Index);
+        var fromStack = _draggedItem;
         var toStack = to.Container.GetItem(to.Index);
 
+        // Move
         if (toStack.Item == null)
         {
             toStack.Item = fromStack.Item;
@@ -61,8 +79,14 @@ public class DragAndDropController
             return;
         }
 
+        // Stack
         if (fromStack.Item == toStack.Item && fromStack.Item.IsStackable)
         {
+            if (toStack.Count + fromStack.Count > toStack.Item.MaxStack)
+            {
+                return;
+            }
+
             toStack.Count += fromStack.Count;
 
             fromStack.Item = null;

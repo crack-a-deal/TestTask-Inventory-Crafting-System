@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class SlotFrameView : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, IPointerExitHandler, IDropHandler
 {
     public event Action<SlotFrameView> ItemDropped;
+    public event Action<SlotFrameView> ItemClicked;
 
     public event Action ItemEnter;
     public event Action<Vector2> ItemMove;
@@ -18,7 +19,6 @@ public class SlotFrameView : MonoBehaviour, IPointerEnterHandler, IPointerMoveHa
     [SerializeField] private Image targetGraphic;
     [SerializeField] private Sprite defaultSprite;
     [SerializeField] private Sprite selectedSprite;
-    [SerializeField] private Sprite unavailableSprite;
 
 
     public DragItemView DragedItem => dragItemView; 
@@ -43,11 +43,6 @@ public class SlotFrameView : MonoBehaviour, IPointerEnterHandler, IPointerMoveHa
     public void SetIcon(Sprite icon)
     {
         dragItemView.Icon.sprite = icon;
-    }
-
-    public void SetStatus(bool availible)
-    {
-        targetGraphic.sprite = availible ? defaultSprite : unavailableSprite;
     }
 
     public void SetCount(string count)

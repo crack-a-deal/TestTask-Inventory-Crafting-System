@@ -22,6 +22,27 @@ public class SlotFramePresenter
     private readonly TooltipPresenter _tooltip;
     private readonly DragAndDropController _dragDropPresenter;
 
+    private bool _canTake = false;
+
+    public bool CanTake => _canTake;
+
+    public ItemStack Slot
+    {
+        get
+        {
+            return _slot;
+        }
+        set
+        {
+            if (_slot == value)
+            {
+                return;
+            }
+
+            _slot = value;
+        }
+    }
+
 
     public SlotFramePresenter(UISlot slot, SlotFrameView view, TooltipPresenter tooltip, DragAndDropController dragDropPresenter)
     {
@@ -36,26 +57,28 @@ public class SlotFramePresenter
 
         _slot.Changed += InventoryItem_OnChanged;
 
-        _view.ItemEnter += _view_ItemEnter;
-        _view.ItemMove += _view_ItemMove;
-        _view.ItemExit += _view_ItemExit;
+        _view.ItemEnter += View_OnItemEnter;
+        _view.ItemMove += View_OnItemMove;
+        _view.ItemExit += View_OnItemExit;
 
         _view.DragedItem.BeginDrag += DragedItem_BeginDrag;
         _view.DragedItem.Drag += DragedItem_Drag;
         _view.DragedItem.EndDrag += DragedItem_EndDrag;
 
         _view.ItemDropped += View_ItemDropped;
+
+        _canTake = true;
     }
 
-    private void View_ItemDropped(SlotFrameView obj)
+
+    private void View_ItemDropped(SlotFrameView slotView)
     {
-        _dragDropPresenter.EndDrag(_uiSlot);
-        //_dragDropPresenter.SetTargetSlot(obj);
+        _dragDropPresenter.EndDrag(_uiSlot, slotView.transform.position);
     }
 
-    private void DragedItem_EndDrag(Vector2 obj)
+    private void DragedItem_EndDrag(Vector2 position)
     {
-        _dragDropPresenter.EndDrag(null);
+        _dragDropPresenter.EndDrag(null, position);
         _view.ShowItem(true);
         UpdateSlotView(_slot);
     }
@@ -67,21 +90,19 @@ public class SlotFramePresenter
 
     private void DragedItem_BeginDrag(Vector2 position)
     {
+        if (_canTake == false)
+        {
+            return;
+        }
+
+        bool isShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+
         _view.ShowItem(false);
-        _dragDropPresenter.BeginDrag(_uiSlot);
+
+        _dragDropPresenter.BeginDrag(_uiSlot, isShift);
     }
 
-    private void _view_ItemMove(Vector2 obj)
-    {
-        _tooltip.Move(obj);
-    }
-
-    private void _view_ItemExit()
-    {
-        _tooltip.Hide();
-    }
-
-    private void _view_ItemEnter()
+    private void View_OnItemEnter()
     {
         if (_slot.Item == null)
         {
@@ -92,10 +113,27 @@ public class SlotFramePresenter
         _tooltip.Show();
     }
 
+    private void View_OnItemMove(Vector2 obj)
+    {
+        _tooltip.Move(obj);
+    }
+
+    private void View_OnItemExit()
+    {
+        _tooltip.Hide();
+    }
+
+
+
     public void SetItem(ItemStack item)
     {
         _slot = item;
         UpdateSlotView(_slot);
+    }
+
+    public void SetTakable(bool canTake)
+    {
+        _canTake = canTake;
     }
 
     private void InventoryItem_OnChanged(ItemStack stack)
@@ -103,7 +141,7 @@ public class SlotFramePresenter
         UpdateSlotView(stack);
     }
 
-    public void UpdateSlotView(ItemStack stack)
+    private void UpdateSlotView(ItemStack stack)
     {
         if (stack.Item == null || stack.Count == 0)
         {
@@ -117,10 +155,5 @@ public class SlotFramePresenter
 
         _view.SetIcon(stack.Item.Icon);
         _view.SetCount(stack.Count.ToString());
-    }
-
-    public void SetStatus(bool availible)
-    {
-        _view.SetStatus(availible);
     }
 }

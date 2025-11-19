@@ -7,25 +7,33 @@ public class EntryPoint : MonoBehaviour
     [SerializeField] private RecipeDatabase recipeDatabase;
 
     [Header("UI")]
+    [SerializeField] private DragPreview draggedItemPreview;
+    [SerializeField] private RectTransform droppedArea;
+    [SerializeField] private TooltipView tooltip;
+
     [SerializeField] private InventoryPageView inventoryPage;
     [SerializeField] private CraftingPageView craftingPage;
 
-    [SerializeField] private DragPreview draggedItemPreview;
-    [SerializeField] private TooltipView tooltip;
+    [Header("Testing")]
+    [SerializeField] private NewBehaviourScript behaviourScript;
 
     private InventoryService _inventoryService;
     private CraftingService _craftingService;
 
-    private InventoryPagePresenter _inventoryPresenter;
-    private CraftingPagePresenter _craftingPresenter;
-
     private DragAndDropController _dragAndDropController;
     private TooltipPresenter _tooltipPresenter;
+
+    private SlotFramePresenterFactory _slotFramePresenterFactory;
+
+    private InventoryPagePresenter _inventoryPresenter;
+    private CraftingPagePresenter _craftingPresenter;
 
     private void Awake()
     {
         InitializeServices();
         InitializeUI();
+
+        behaviourScript.craftingService = _craftingService;
     }
 
     private void InitializeServices()
@@ -39,7 +47,9 @@ public class EntryPoint : MonoBehaviour
         _dragAndDropController = new DragAndDropController(draggedItemPreview);
         _tooltipPresenter = new TooltipPresenter(tooltip);
 
-        _inventoryPresenter = new InventoryPagePresenter(_inventoryService, inventoryPage, _dragAndDropController, _tooltipPresenter);
-        _craftingPresenter = new CraftingPagePresenter(_craftingService, craftingPage, _dragAndDropController, _tooltipPresenter);
+        _slotFramePresenterFactory = new SlotFramePresenterFactory(_dragAndDropController, _tooltipPresenter);
+
+        _inventoryPresenter = new InventoryPagePresenter(_inventoryService, inventoryPage,_dragAndDropController, _slotFramePresenterFactory);
+        _craftingPresenter = new CraftingPagePresenter(_craftingService, craftingPage, _slotFramePresenterFactory);
     }
 }

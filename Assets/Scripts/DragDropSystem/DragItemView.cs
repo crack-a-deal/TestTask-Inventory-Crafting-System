@@ -15,7 +15,6 @@ public class DragItemView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        //image.enabled = false;
         BeginDrag?.Invoke(eventData.position);
     }
 
@@ -26,7 +25,6 @@ public class DragItemView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        //image.enabled = true;
         EndDrag?.Invoke(eventData.position);
     }
 }
